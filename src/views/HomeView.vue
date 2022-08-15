@@ -1,4 +1,9 @@
 <template>
+  <!-- 題組 群組配分、題目數量、占分比 -->
+  <PercentageView></PercentageView>
+
+  <hr>
+
   <!-- 克漏字 -->
   <h2>克漏字</h2>
   <HelloWorld></HelloWorld>
@@ -19,8 +24,10 @@
 import HelloWorld from '@/components/HelloWorld.vue'
 import QuestionSort from '@/components/QuestionSort.vue'
 import ExamTime from '@/components/ExamTime.vue'
+import PercentageView from '@/components/PercentageView.vue'
 export default {
   components: {
+    PercentageView,
     HelloWorld,
     QuestionSort,
     ExamTime
