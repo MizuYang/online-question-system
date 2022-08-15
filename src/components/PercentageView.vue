@@ -10,22 +10,40 @@
 
   <!-- 群組配分、題目數量、占分比 -->
   <label for="是非題">是非題：</label>
-  <input type="text" id="是非題" v-model="percentage.是非題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分
+  <input type="text" id="是非題" v-model="percentage.是非題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
+  <label for="是非題">題目數量：</label>
+  <input type="text" id="是非題" v-model="questionNum.是非題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
+
   <br>
   <label for="單選題">單選題：</label>
-  <input type="text" id="單選題" v-model="percentage.單選題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分
+  <input type="text" id="單選題" v-model="percentage.單選題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
+  <label for="單選題">題目數量：</label>
+  <input type="text" id="單選題" v-model="questionNum.單選題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
+
   <br>
   <label for="複選題">複選題：</label>
-  <input type="text" id="複選題" v-model="percentage.複選題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分
+  <input type="text" id="複選題" v-model="percentage.複選題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
+  <label for="複選題">題目數量：</label>
+  <input type="text" id="複選題" v-model="questionNum.複選題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
+
   <br>
   <label for="克漏字">克漏字：</label>
-  <input type="text" id="克漏字" v-model="percentage.克漏字" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分
+  <input type="text" id="克漏字" v-model="percentage.克漏字" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
+  <label for="克漏字">題目數量：</label>
+  <input type="text" id="克漏字" v-model="questionNum.克漏字" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
+
   <br>
   <label for="重組題">重組題：</label>
-  <input type="text" id="重組題" v-model="percentage.重組題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分
+  <input type="text" id="重組題" v-model="percentage.重組題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
+  <label for="重組題">題目數量：</label>
+  <input type="text" id="重組題" v-model="questionNum.重組題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
+
   <br>
   <label for="問答題">問答題：</label>
-  <input type="text" id="問答題" v-model="percentage.問答題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分
+  <input type="text" id="問答題" v-model="percentage.問答題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
+  <label for="問答題">題目數量：</label>
+  <input type="text" id="問答題" v-model="questionNum.問答題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
+
   <br>
 
 </template>
@@ -33,16 +51,16 @@
 <script>
 
 export default {
-  components: {
-  },
 
   computed: {
     //* 分配分數
     allotScore () {
       let useScore = 0 //* 初始化
-      Object.values(this.percentage).forEach(score => {
-        if (score) {
-          useScore += parseInt(score)
+      Object.keys(this.percentage).forEach(score => {
+        const queScore = this.percentage[score] //* 題目分數
+        const queNum = this.questionNum[score] //* 題目數量
+        if (queScore > 0) {
+          useScore += queScore * queNum
         }
         return useScore
       })
@@ -60,6 +78,14 @@ export default {
         克漏字: 0,
         重組題: 0,
         問答題: 0
+      },
+      questionNum: {
+        是非題: 0,
+        單選題: 0,
+        複選題: 0,
+        克漏字: 0,
+        重組題: 0,
+        問答題: 0
       }
     }
   },
@@ -68,15 +94,6 @@ export default {
   },
 
   methods: {
-    // //* 分配分數
-    // allotScore () {
-    //   this.useScore = 0 //* 初始化
-    //   Object.values(this.percentage).forEach(score => {
-    //     if (score) {
-    //       this.useScore += parseInt(score)
-    //     }
-    //   })
-    // }
   },
 
   mounted () {
