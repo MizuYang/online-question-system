@@ -1,7 +1,7 @@
 <template>
   <!-- 克漏字 -->
   <section>
-    <textarea name="" id="" cols="30" rows="10" v-model="text" @change="addExamQuestions"></textarea>
+    <textarea name="" id="" cols="30" rows="5" v-model="text" @change="addExamQuestions"></textarea>
     <br>
     <!-- 輸入題目答案 -->
     <div ref="answerContainer"></div>
