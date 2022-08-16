@@ -1,5 +1,6 @@
 <template>
   <!-- 產生幾組考卷 -->
+  <h2 class="h5">設定要自動產生多少份考卷</h2>
   我要產生 <input type="number" v-model="examPaperNum" style="width:45px"> 組考卷
   <button type="button" @click="getExamPaper">產生題目</button>
 
@@ -7,14 +8,14 @@
   <br>
 
   <!-- 選單:選擇使用的考卷 -->
-  <select @change="changePreviewExPaper" v-if="Object.keys(teacherUseExPaper).length===0">
+  <select @change="changePreviewExPaper" v-if="Object.keys(teacherUseExPaper).length===0 && Object.keys(previewQueList).length>0">
     <option :value="keys" v-for="(val,keys) in previewQueList" :key="`perview${keys}`">
       {{ keys }}
     </option>
   </select>
 
-  <button type="button" class="mx-5 my-4" @click="teacherUseExPaper=perviewExamPaper" v-if="Object.keys(teacherUseExPaper).length===0">確定使用此考卷</button>
-  <button type="button" class="mx-5 my-4" @click="clearExPaper" v-else>重選考卷</button>
+  <button type="button" class="mx-5 my-4" @click="teacherUseExPaper=perviewExamPaper" v-if="Object.keys(teacherUseExPaper).length===0&& Object.keys(previewQueList).length>0">確定使用此考卷</button>
+  <button type="button" class="mx-5 my-4" @click="clearExPaper" v-if="Object.keys(teacherUseExPaper).length>0">重選考卷</button>
 
   <br>
 
@@ -33,7 +34,7 @@
   </ul>
 
   <!-- 渲染已選擇的考卷題目 -->
-  <button type="button" @click="randomSort">隨機排序答案選項</button>
+  <button type="button" @click="randomSort" v-if="Object.keys(teacherUseExPaper).length>0">隨機排序答案選項</button>
   <ul class="mb-2" v-if="Object.keys(teacherUseExPaper).length>0">
     <li v-for="(val, keys) in teacherUseExPaper" :key="keys">
       <p class="mb-0">

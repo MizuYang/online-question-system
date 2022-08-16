@@ -1,6 +1,7 @@
 <template>
   <!-- 分數上限 -->
   <div class="border-bottom my-2 pb-2">
+    <h2 class="h5">設定分數限制</h2>
     <label for="分數上限">分數上限：</label>
     <input type="text" v-model="scoreCap" id="分數上限" style="width: 35px">分
 
@@ -8,6 +9,7 @@
   </div>
   <br>
 
+  <h2 class="h5">設定各題組要多少題目</h2>
   <!-- 群組配分、題目數量、占分比 -->
   <label for="是非題">是非題：</label>
   <input type="text" id="是非題" v-model="scorePercentage.是非題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
