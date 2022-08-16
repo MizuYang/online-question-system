@@ -10,67 +10,102 @@
 
   <!-- 群組配分、題目數量、占分比 -->
   <label for="是非題">是非題：</label>
-  <input type="text" id="是非題" v-model="percentage.是非題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
+  <input type="text" id="是非題" v-model="scorePercentage.是非題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
   <label for="是非題">題目數量：</label>
-  <input type="text" id="是非題" v-model="questionNum.是非題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
+  <input type="text" id="是非題" v-model="questionsNumList.是非題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
 
   <br>
   <label for="單選題">單選題：</label>
-  <input type="text" id="單選題" v-model="percentage.單選題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
+  <input type="text" id="單選題" v-model="scorePercentage.單選題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
   <label for="單選題">題目數量：</label>
-  <input type="text" id="單選題" v-model="questionNum.單選題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
+  <input type="text" id="單選題" v-model="questionsNumList.單選題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
 
   <br>
   <label for="複選題">複選題：</label>
-  <input type="text" id="複選題" v-model="percentage.複選題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
+  <input type="text" id="複選題" v-model="scorePercentage.複選題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
   <label for="複選題">題目數量：</label>
-  <input type="text" id="複選題" v-model="questionNum.複選題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
+  <input type="text" id="複選題" v-model="questionsNumList.複選題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
 
   <br>
   <label for="克漏字">克漏字：</label>
-  <input type="text" id="克漏字" v-model="percentage.克漏字" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
+  <input type="text" id="克漏字" v-model="scorePercentage.克漏字" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
   <label for="克漏字">題目數量：</label>
-  <input type="text" id="克漏字" v-model="questionNum.克漏字" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
+  <input type="text" id="克漏字" v-model="questionsNumList.克漏字" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
 
   <br>
   <label for="重組題">重組題：</label>
-  <input type="text" id="重組題" v-model="percentage.重組題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
+  <input type="text" id="重組題" v-model="scorePercentage.重組題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
   <label for="重組題">題目數量：</label>
-  <input type="text" id="重組題" v-model="questionNum.重組題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
+  <input type="text" id="重組題" v-model="questionsNumList.重組題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
 
   <br>
   <label for="問答題">問答題：</label>
-  <input type="text" id="問答題" v-model="percentage.問答題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
+  <input type="text" id="問答題" v-model="scorePercentage.問答題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">分，
   <label for="問答題">題目數量：</label>
-  <input type="text" id="問答題" v-model="questionNum.問答題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
+  <input type="text" id="問答題" v-model="questionsNumList.問答題" style="width: 30px" oninput="value=value.replace(/[^\d]/g,'')">題
 
   <br>
 
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
 
   computed: {
     //* 分配分數
     allotScore () {
       let useScore = 0 //* 初始化
-      Object.keys(this.percentage).forEach(score => {
-        const queScore = this.percentage[score] //* 題目分數
-        const queNum = this.questionNum[score] //* 題目數量
+      Object.keys(this.scorePercentage).forEach(score => {
+        const queScore = this.scorePercentage[score] //* 題目分數
+        const queNum = this.questionsNumList[score] //* 題目數量
         if (queScore > 0) {
           useScore += queScore * queNum
         }
         return useScore
       })
+
       return useScore
+    }
+  },
+
+  watch: {
+    //* 監聽:用戶先輸入"分數"再輸入"題目數量" => 把值傳回 Store
+    questionsNumList: {
+      handler (val) {
+        const obj = {}
+        Object.keys(val).forEach(keys => {
+          //* 若該題組有設定"分數"，才把該題組和題目數量傳到物件
+          if (this.scorePercentage[keys]) {
+            const score = parseInt(val[keys])
+            obj[keys] = score
+            this.GET_QUESTIONS_NUM(obj)
+          }
+        })
+      },
+      deep: true
+    },
+    //* 監聽:用戶先輸入"題目數量"再輸入"分數" => 把值傳回 Store
+    scorePercentage: {
+      handler (val) {
+        const obj = {}
+        Object.keys(val).forEach(keys => {
+          const queNum = parseInt(this.questionsNumList[keys])
+          //* 若該題組有設定"數量"，才把該題組和題目數量傳到物件
+          if (queNum) {
+            obj[keys] = queNum
+            this.GET_QUESTIONS_NUM(obj)
+          }
+        })
+      },
+      deep: true
     }
   },
 
   data () {
     return {
       scoreCap: 100,
-      percentage: {
+      scorePercentage: {
         是非題: 0,
         單選題: 0,
         複選題: 0,
@@ -78,7 +113,7 @@ export default {
         重組題: 0,
         問答題: 0
       },
-      questionNum: {
+      questionsNumList: {
         是非題: 0,
         單選題: 0,
         複選題: 0,
@@ -87,6 +122,10 @@ export default {
         問答題: 0
       }
     }
+  },
+
+  methods: {
+    ...mapMutations(['GET_QUESTIONS_NUM'])
   }
 
 }
