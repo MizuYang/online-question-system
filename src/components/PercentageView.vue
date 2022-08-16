@@ -47,7 +47,9 @@
   <br>
 
   <ul class="my-2">
-    <li v-for="(queNum, keys) in questionsNumList" :key="keys">{{ keys }}：{{ queNum }}</li>
+    <template v-for="(val, keys) in questionsList" :key="keys">
+      <li v-if="val.queNum && val.score">{{ keys }}：{{ val.queNum }} 題, 每題 {{ val.score }} 分</li>
+    </template>
   </ul>
 </template>
 
@@ -56,7 +58,7 @@ import { mapState, mapMutations } from 'vuex'
 export default {
 
   computed: {
-    ...mapState(['questionsNumList']),
+    ...mapState(['questionsList']),
     //* 分配分數
     allotScore () {
       let useScore = 0 //* 初始化
@@ -83,9 +85,14 @@ export default {
           const queNum = parseInt(this.questionsNumList[keys])
           //* 若有設定"分數"、"數量"，才傳到 Store
           if (score && queNum) {
-            obj[keys] = queNum
+            obj[keys] = {
+              queNum,
+              score
+            }
           } else {
-            obj[keys] = 0
+            obj[keys] = {
+              queNum: 0
+            }
           }
         })
         this.GET_QUESTIONS_NUM(obj)
@@ -101,9 +108,14 @@ export default {
           const queNum = parseInt(this.questionsNumList[keys])
           //* 若有設定"分數"、"數量"，才傳到 Store
           if (score && queNum) {
-            obj[keys] = queNum
+            obj[keys] = {
+              queNum,
+              score
+            }
           } else {
-            obj[keys] = 0
+            obj[keys] = {
+              queNum: 0
+            }
           }
         })
         this.GET_QUESTIONS_NUM(obj)

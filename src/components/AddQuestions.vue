@@ -1,5 +1,9 @@
 <template>
-  {{ questionsNumList }}
+  我要產生 <input type="number" v-model="examPaperNum" style="width:45px"> 組考卷
+  <button type="button" @click="getExamPaper">產生題目</button>
+
+  <!-- {{ questionsList }} -->
+
 </template>
 
 <script>
@@ -7,12 +11,12 @@ import { mapState } from 'vuex'
 export default {
 
   computed: {
-    ...mapState(['questionsNumList'])
+    ...mapState(['questionsList'])
   },
 
   data () {
     return {
-      questionsList: {
+      questions: {
         是非題: [
           {
             題目: '是非題 0',
@@ -2449,11 +2453,48 @@ export default {
             答案: 'D'
           }
         ]
-      }
+      },
+      previewQue: [],
+      examPaperNum: 1
     }
   },
 
   methods: {
+    //* 新增*組考卷
+    getExamPaper () {
+      //* 若產生考卷數量大於 0
+      const exPaperNum = this.examPaperNum
+      if (exPaperNum > 0) {
+        for (let i = 0; i < exPaperNum; i++) {
+          console.log(this.getRandomQuestions())
+          this.previewQue[`考卷${i + 1}`] = this.getRandomQuestions()
+        }
+        console.log(this.previewQue)
+      }
+    },
+    //* 生成用戶選擇的各題組 指定數量的隨機題目
+    getRandomQuestions () {
+      const obj = {}
+      Object.keys(this.questionsList).forEach((queKeys) => {
+        //* 若題目數量大於 0
+        if (this.questionsList[queKeys].queNum) {
+          const queNum = this.questionsList[queKeys].queNum
+          const shuffled = this.questions[queKeys].slice(0)
+          let i = this.questions[queKeys].length
+          const min = i - queNum
+          let temp
+          let index
+          while (i-- > min) {
+            index = Math.floor((i + 1) * Math.random())
+            temp = shuffled[index]
+            shuffled[index] = shuffled[i]
+            shuffled[i] = temp
+          }
+          obj[queKeys] = shuffled.slice(min)
+        }
+      })
+      return obj
+    }
   },
 
   mounted () {
