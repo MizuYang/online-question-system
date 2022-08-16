@@ -1,34 +1,49 @@
 <template>
+  <!-- 產生幾組考卷 -->
   我要產生 <input type="number" v-model="examPaperNum" style="width:45px"> 組考卷
   <button type="button" @click="getExamPaper">產生題目</button>
 
   <br>
   <br>
 
-  <select @change="changePreviewExParper">
+  <!-- 選單:選擇使用的考卷 -->
+  <select @change="changePreviewExPaper" v-if="Object.keys(teacherUseExPaper).length===0">
     <option :value="keys" v-for="(val,keys) in previewQueList" :key="`perview${keys}`">
       {{ keys }}
     </option>
   </select>
 
+  <button type="button" class="mx-5 my-4" @click="teacherUseExPaper=perviewExamPaper" v-if="Object.keys(teacherUseExPaper).length===0">確定使用此考卷</button>
+  <button type="button" class="mx-5 my-4" @click="teacherUseExPaper={}" v-else>重選考卷</button>
+
   <br>
 
-  <h2 class="fs-5">題目</h2>
-  <ul>
+  <!-- 考卷選擇:渲染題組、題目選項 -->
+  <ul class="mb-2" v-if="Object.keys(teacherUseExPaper).length===0">
     <li v-for="(val, keys) in perviewExamPaper" :key="keys">
-      <p>
+      <p class="mb-0">
         {{ keys }} <small>(每題 {{ questionsList[keys].score }} 分, 共 {{ val.length }}題)</small>
       </p>
       <ul>
         <li v-for="(val) in val" :key="val">
-          題目:{{ val.題目 }}, 答案：<span>{{ getAnsPosition(val.選項) }}</span>, {{ randomSort(val.選項) }}
+          題目:{{ val.題目 }}, 答案：{{ getAnsPosition(val.選項) }}, {{ val.選項 }}
         </li>
       </ul>
     </li>
-    <li>
-      <button type="button">
-        選擇考卷
-      </button>
+  </ul>
+
+  <!-- 渲染已選擇的考卷題目 -->
+  <button type="button" @click="randomSort">隨機排序答案選項</button>
+  <ul class="mb-2" v-if="Object.keys(teacherUseExPaper).length>0">
+    <li v-for="(val, keys) in teacherUseExPaper" :key="keys">
+      <p class="mb-0">
+        {{ keys }} <small>(每題 {{ questionsList[keys].score }} 分, 共 {{ val.length }}題)</small>
+      </p>
+      <ul>
+        <li v-for="(val) in val" :key="val">
+          題目:{{ val.題目 }}, 答案：{{ getAnsPosition(val.選項) }}, {{ val.選項 }}
+        </li>
+      </ul>
     </li>
   </ul>
 </template>
@@ -6059,13 +6074,15 @@ export default {
       },
       previewQueList: {}, //* 給用戶選要哪一組考卷
       perviewExamPaper: {},
-      examPaperNum: 1
+      examPaperNum: 1,
+      teacherUseExPaper: {} //* 老師選擇的考卷
+
     }
   },
 
   methods: {
-    changePreviewExParper (e) {
-      console.log(e.target.value)
+    //* 切換預覽考卷
+    changePreviewExPaper (e) {
       const currentExPaper = e.target.value
       this.perviewExamPaper = this.previewQueList[currentExPaper]
     },
@@ -6079,6 +6096,7 @@ export default {
           this.previewQueList[`考卷${i + 1}`] = this.getRandomQuestions()
         }
         console.log(this.previewQueList)
+        this.perviewExamPaper = this.previewQueList['考卷1'] //* 預設顯示考卷1
       }
     },
     //* 生成用戶選擇的各題組 指定數量的隨機題目
@@ -6104,28 +6122,45 @@ export default {
       })
       return obj
     },
-    randomSort (obj) {
-      const arr = []
-      Object.keys(obj).forEach(keys => {
-        arr.push(obj[keys])
+    //* 亂數排序答案選項
+    randomSort () {
+      let newArr = []
+      Object.keys(this.teacherUseExPaper).forEach(keys => {
+        this.teacherUseExPaper[keys].forEach(item => {
+          const arr = []
+          Object.keys(item.選項).forEach(keys => {
+            arr.push(item.選項[keys])
+            newArr = sort(arr)
+          })
+
+          item.選項 = {
+            A: newArr[0],
+            B: newArr[1],
+            C: newArr[2],
+            D: newArr[3]
+          }
+        })
       })
+      // console.log(arr)
       //* 將答案順序打亂
-      for (let i = 0, l = arr.length; i < l; i++) {
-        const rc = parseInt(Math.random() * l)
-        // 让当前循环的数组元素和随机出来的数组元素交换位置
-        const empty = arr[i]
-        arr[i] = arr[rc]
-        arr[rc] = empty
+      function sort (arr) {
+        for (let i = 0, l = arr.length; i < l; i++) {
+          const rc = parseInt(Math.random() * l)
+          // 让当前循环的数组元素和随机出来的数组元素交换位置
+          const empty = arr[i]
+          arr[i] = arr[rc]
+          arr[rc] = empty
+        }
+        return arr
       }
-      return arr
     },
+    //* 取得答案選項位置
     getAnsPosition (ansObj) {
-      // console.log(ansObj)
-      // Object.keys(ansObj).findIndex
-      // const position = Object.keys(ansObj).findIndex(keys => {
-      //   return ansObj[keys] === '答案'
-      // })
-      // console.log(position)
+      const ansOptions = ['A', 'B', 'C', 'D']
+      const position = Object.keys(ansObj).findIndex(keys => {
+        return ansObj[keys] === '答案'
+      })
+      return ansOptions[position]
     }
   },
 
@@ -6153,8 +6188,8 @@ export default {
         }
         data.push(obj)
       }
-      console.log(data)
-      console.log(answerCount) //* 查看答案各占比
+      // console.log(data)
+      // console.log(answerCount) //* 查看答案各占比
     }
     random('問答題', 100) // ? 自動產生 100 筆 假資料
 
