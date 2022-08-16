@@ -14,7 +14,7 @@
   </select>
 
   <button type="button" class="mx-5 my-4" @click="teacherUseExPaper=perviewExamPaper" v-if="Object.keys(teacherUseExPaper).length===0">確定使用此考卷</button>
-  <button type="button" class="mx-5 my-4" @click="teacherUseExPaper={}" v-else>重選考卷</button>
+  <button type="button" class="mx-5 my-4" @click="clearExPaper" v-else>重選考卷</button>
 
   <br>
 
@@ -26,7 +26,7 @@
       </p>
       <ul>
         <li v-for="(val) in val" :key="val">
-          題目:{{ val.題目 }}, 答案：{{ getAnsPosition(val.選項) }}, {{ val.選項 }}
+          題目:{{ val.題目 }}, <span class="bg-hightLight">答案：{{ getAnsPosition(val.選項) }}</span>, {{ val.選項 }}
         </li>
       </ul>
     </li>
@@ -38,10 +38,11 @@
     <li v-for="(val, keys) in teacherUseExPaper" :key="keys">
       <p class="mb-0">
         {{ keys }} <small>(每題 {{ questionsList[keys].score }} 分, 共 {{ val.length }}題)</small>
+        <span class="bg-hightLight ms-5">答案各佔比：{{ ansPercentage(val) }}</span>
       </p>
       <ul>
         <li v-for="(val) in val" :key="val">
-          題目:{{ val.題目 }}, 答案：{{ getAnsPosition(val.選項) }}, {{ val.選項 }}
+          題目:{{ val.題目 }}, <span class="bg-hightLight">答案：{{ getAnsPosition(val.選項) }}</span>, {{ val.選項 }}
         </li>
       </ul>
     </li>
@@ -6095,9 +6096,15 @@ export default {
         for (let i = 0; i < exPaperNum; i++) {
           this.previewQueList[`考卷${i + 1}`] = this.getRandomQuestions()
         }
-        console.log(this.previewQueList)
         this.perviewExamPaper = this.previewQueList['考卷1'] //* 預設顯示考卷1
       }
+    },
+    //* 重選考卷
+    clearExPaper () {
+      //* 初始化
+      this.teacherUseExPaper = {}
+      this.previewQueList = {}
+      this.perviewExamPaper = {}
     },
     //* 生成用戶選擇的各題組 指定數量的隨機題目
     getRandomQuestions () {
@@ -6141,7 +6148,6 @@ export default {
           }
         })
       })
-      // console.log(arr)
       //* 將答案順序打亂
       function sort (arr) {
         for (let i = 0, l = arr.length; i < l; i++) {
@@ -6161,11 +6167,35 @@ export default {
         return ansObj[keys] === '答案'
       })
       return ansOptions[position]
+    },
+    //* 答案各佔比
+    ansPercentage (ans) {
+      const answerCount = {
+        A: 0,
+        B: 0,
+        C: 0,
+        D: 0
+      }
+      ans.forEach(item => {
+        const ansIndex = Object.keys(item.選項).findIndex(optionABCD => {
+          return item.選項[optionABCD] === '答案'
+        })
+        if (ansIndex === 0) {
+          answerCount.A++
+        } else if (ansIndex === 1) {
+          answerCount.B++
+        } else if (ansIndex === 2) {
+          answerCount.C++
+        } else if (ansIndex === 3) {
+          answerCount.D++
+        }
+      })
+      return `A：${answerCount.A}, B：${answerCount.B}, C： ${answerCount.C}, D：${answerCount.D}`
     }
   },
 
   mounted () {
-    //* 計算答案各占比
+    //* 計算答案各佔比
     const answerCount = {
       A: 0,
       B: 0,
@@ -6206,4 +6236,8 @@ export default {
 }
 </script>
 
-<style lang='scss' scope></style>
+<style lang='scss' scope>
+.bg-hightLight{
+  background: rgba(189, 253, 255, 0.665);
+}
+</style>
