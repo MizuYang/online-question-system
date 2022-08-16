@@ -15,7 +15,10 @@
 
   <h2 class="fs-5">題目</h2>
   <ul>
-    <li v-for="val, keys in perviewExamPaper" :key="keys">{{ keys }}
+    <li v-for="val, keys in perviewExamPaper" :key="keys">
+      <p>
+        {{ keys }} <small>(每題 {{ questionsList[keys].score }} 分)</small>
+      </p>
       <ul>
         <li v-for="(val) in val" :key="val">
           題目：{{ val.題目 }}, 答案：{{ val.答案 }}
@@ -23,6 +26,7 @@
       </ul>
     </li>
   </ul>
+  //! 在題目中加入答案選項，並將順序打亂
 </template>
 
 <script>
