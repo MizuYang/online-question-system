@@ -1,12 +1,13 @@
 <template>
-  寫一些假題目，來試試看自動產出多份試卷 並可以提供選擇使用哪一份試卷
-  這個元件還沒匯入喔喔喔!!!!!!!!!!xd
+  {{ questionsNumList }}
 </template>
 
 <script>
-
+import { mapState } from 'vuex'
 export default {
-  components: {
+
+  computed: {
+    ...mapState(['questionsNumList'])
   },
 
   data () {

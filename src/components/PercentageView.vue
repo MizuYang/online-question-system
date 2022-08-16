@@ -46,13 +46,17 @@
 
   <br>
 
+  <ul class="my-2">
+    <li v-for="(queNum, keys) in questionsNumList" :key="keys">{{ keys }}：{{ queNum }}</li>
+  </ul>
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 export default {
 
   computed: {
+    ...mapState(['questionsNumList']),
     //* 分配分數
     allotScore () {
       let useScore = 0 //* 初始化
@@ -72,16 +76,19 @@ export default {
   watch: {
     //* 監聽:用戶先輸入"分數"再輸入"題目數量" => 把值傳回 Store
     questionsNumList: {
-      handler (val) {
+      handler () {
         const obj = {}
-        Object.keys(val).forEach(keys => {
-          //* 若該題組有設定"分數"，才把該題組和題目數量傳到物件
-          if (this.scorePercentage[keys]) {
-            const score = parseInt(val[keys])
-            obj[keys] = score
-            this.GET_QUESTIONS_NUM(obj)
+        Object.keys(this.questionsNumList).forEach(keys => {
+          const score = parseInt(this.scorePercentage[keys])
+          const queNum = parseInt(this.questionsNumList[keys])
+          //* 若有設定"分數"、"數量"，才傳到 Store
+          if (score && queNum) {
+            obj[keys] = queNum
+          } else {
+            obj[keys] = 0
           }
         })
+        this.GET_QUESTIONS_NUM(obj)
       },
       deep: true
     },
@@ -90,13 +97,16 @@ export default {
       handler (val) {
         const obj = {}
         Object.keys(val).forEach(keys => {
+          const score = parseInt(this.scorePercentage[keys])
           const queNum = parseInt(this.questionsNumList[keys])
-          //* 若該題組有設定"數量"，才把該題組和題目數量傳到物件
-          if (queNum) {
+          //* 若有設定"分數"、"數量"，才傳到 Store
+          if (score && queNum) {
             obj[keys] = queNum
-            this.GET_QUESTIONS_NUM(obj)
+          } else {
+            obj[keys] = 0
           }
         })
+        this.GET_QUESTIONS_NUM(obj)
       },
       deep: true
     }

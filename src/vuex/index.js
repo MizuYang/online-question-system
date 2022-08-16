@@ -4,7 +4,7 @@ export default createStore({
   strict: false, // 嚴謹模式
   state: {
     // 所有在 store 裏的資料
-    questionsNumList: {}
+    questionsNumList: {} //* 題組的題目數量
   },
   actions: {
   },
@@ -13,7 +13,8 @@ export default createStore({
     //* 取得題組的題目數量
     GET_QUESTIONS_NUM (store, val) {
       Object.keys(val).forEach(keys => {
-        store.questionsNumList[keys] = val[keys]
+        const queNum = val[keys]
+        store.questionsNumList[keys] = queNum
       })
     }
   },
