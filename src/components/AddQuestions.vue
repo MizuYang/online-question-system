@@ -2,8 +2,27 @@
   我要產生 <input type="number" v-model="examPaperNum" style="width:45px"> 組考卷
   <button type="button" @click="getExamPaper">產生題目</button>
 
-  <!-- {{ questionsList }} -->
+  <br>
+  <br>
 
+  <select v-model="perviewExamPaper">
+    <option :value="val" v-for="(val,keys) in previewQue" :key="`perview${keys}`">
+      {{ keys }}
+    </option>
+  </select>
+
+  <br>
+
+  <h2 class="fs-5">題目</h2>
+  <ul>
+    <li v-for="val, keys in perviewExamPaper" :key="keys">{{ keys }}
+      <ul>
+        <li v-for="(val) in val" :key="val">
+          題目：{{ val.題目 }}, 答案：{{ val.答案 }}
+        </li>
+      </ul>
+    </li>
+  </ul>
 </template>
 
 <script>
@@ -2454,7 +2473,8 @@ export default {
           }
         ]
       },
-      previewQue: [],
+      previewQue: {}, //* 給用戶選要哪一組考卷
+      perviewExamPaper: {},
       examPaperNum: 1
     }
   },
@@ -2465,8 +2485,8 @@ export default {
       //* 若產生考卷數量大於 0
       const exPaperNum = this.examPaperNum
       if (exPaperNum > 0) {
+        this.previewQue = {} //* 初始化
         for (let i = 0; i < exPaperNum; i++) {
-          console.log(this.getRandomQuestions())
           this.previewQue[`考卷${i + 1}`] = this.getRandomQuestions()
         }
         console.log(this.previewQue)
@@ -2495,6 +2515,9 @@ export default {
       })
       return obj
     }
+    // perviewExPaper (e) {
+    //   console.log(e.target.value)
+    // }
   },
 
   mounted () {
