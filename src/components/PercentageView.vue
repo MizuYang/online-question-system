@@ -49,7 +49,6 @@
 </template>
 
 <script>
-
 export default {
 
   computed: {
@@ -88,18 +87,7 @@ export default {
         問答題: 0
       }
     }
-  },
-
-  watch: {
-  },
-
-  methods: {
-  },
-
-  mounted () {
   }
 
 }
 </script>
-
-<style lang='scss' scope></style>
