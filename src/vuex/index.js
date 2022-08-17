@@ -29,6 +29,10 @@ export default createStore({
     //* 確定考卷
     CONFIRM_EX_PAPER (store, val) {
       store.teacherUseExPaper = val
+    },
+    //* 重選考卷
+    RESET_EX_PAPER (store, val) {
+      store.teacherUseExPaper = {}
     }
   },
   getters: {

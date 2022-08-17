@@ -124,6 +124,7 @@ export default {
     },
     //* 亂數排序答案選項
     randomSort () {
+      const that = this
       let newArr = []
       Object.keys(this.teacherUseExPaper).forEach(keys => {
         this.teacherUseExPaper[keys].forEach(item => {
@@ -152,6 +153,8 @@ export default {
         }
         return arr
       }
+      this.getAnswerIndex() //* 取得答案索引
+      that.CONFIRM_EX_PAPER(that.perviewExamPaper)
     },
     //* 取得答案選項位置
     getAnsPosition (ansObj) {
@@ -188,7 +191,20 @@ export default {
     //* 確定考卷
     confirmExPaper () {
       this.teacherUseExPaper = this.perviewExamPaper
+      this.getAnswerIndex() //* 取得答案索引
       this.CONFIRM_EX_PAPER(this.perviewExamPaper)
+    },
+    //* 取得答案索引
+    getAnswerIndex () {
+      Object.keys(this.teacherUseExPaper).forEach(key => {
+        this.teacherUseExPaper[key].forEach(items => {
+          const ansIndex = Object.keys(items.選項).findIndex(keys => {
+            return items.選項[keys] === '答案'
+          })
+          //* 新增答案欄位
+          items.答案 = ansIndex
+        })
+      })
     }
   },
 
