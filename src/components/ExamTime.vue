@@ -62,6 +62,9 @@
       <label for="radioC" class="me-2">c</label>
     </section>
 
+    <div class="text-center my-3">
+      <button type="button">提交考卷</button>
+    </div>
   </section>
 
 </template>
