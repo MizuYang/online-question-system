@@ -3,6 +3,10 @@
   <form @submit.prevent="submit">
     <section v-for="(exPaper,key, index) in teacherUseExPaper" :key="`${index}${key}`">
       {{key}}
+      <small>
+        每題 {{ questionsList[key].score }} 分,
+        共 {{ exPaper.length }} 題
+      </small>
       <ol>
         <li v-for="(question,index) in exPaper" :key="`question${question.題目}${index}`">
             題目： {{ question.題目 }}
@@ -30,7 +34,7 @@ import { mapState } from 'vuex'
 export default {
 
   computed: {
-    ...mapState(['teacherUseExPaper'])
+    ...mapState(['teacherUseExPaper', 'questionsList'])
   },
 
   data () {
