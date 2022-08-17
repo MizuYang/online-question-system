@@ -51,6 +51,7 @@ export default {
   methods: {
     submit () {
       //* 初始化
+      this.examStatus.score = 0
       this.examStatus.bingo = 0
       this.examStatus.wrongAnswer = 0
       const arr = []
@@ -75,12 +76,15 @@ export default {
         })
 
         //* 比對學生答案索引和正確解答索引是否一致
+        console.log('學生答案', studentAnsArr[index])
+        console.log('正確答案', answerIndex)
         if (studentAnsArr[index] === answerIndex) {
           this.examStatus.bingo++
         } else {
           this.examStatus.wrongAnswer++
         }
       })
+      console.log('this.examStatus', this.examStatus)
     }
   },
 
