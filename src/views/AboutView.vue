@@ -18,6 +18,11 @@
     </section>
     <button type="submit">提交考卷</button>
   </form>
+  <hr>
+  <h3>考試結果</h3>
+  分數：{{ examStatus.score }} <br>
+  答對：{{ examStatus.bingo }} 題<br>
+  答錯：{{ examStatus.wrongAnswer }} 題
 </template>
 
 <script>
@@ -41,25 +46,37 @@ export default {
 
   methods: {
     submit () {
+      //* 初始化
+      this.examStatus.bingo = 0
+      this.examStatus.wrongAnswer = 0
       const arr = []
+
       //* 將所有題組(是非題、單選題..)的答案選項丟到 arr，方便逐一比對
       Object.keys(this.teacherUseExPaper).forEach(key => {
         this.teacherUseExPaper[key].forEach(items => {
           arr.push(items)
         })
       })
-      console.log(arr)
       //* 取出選項中答案的索引位置
-      arr.forEach(items => {
+      arr.forEach((items, index) => {
         const answerIndex = Object.values(items.選項).findIndex(item => {
           return item === '答案'
         })
-        console.log(answerIndex)
+
+        //* 和考生選擇的索引位置一樣(答對)，就將 examStatus.bingo+1，答錯 examStatus.wrongAnswer+1
+        const studentAnsArr = []
+        //* 先將學生答案拉出來
+        Object.values(this.examForm).forEach(studentAnswer => {
+          studentAnsArr.push(studentAnswer)
+        })
+
+        //* 比對學生答案索引和正確解答索引是否一致
+        if (studentAnsArr[index] === answerIndex) {
+          this.examStatus.bingo++
+        } else {
+          this.examStatus.wrongAnswer++
+        }
       })
-      //* 和考生選擇的索引位置一樣(答對)，就將 examStatus.bingo+1，答錯 examStatus.wrongAnswer+1
-      // const studentAnsIndex = this.examForm.findIndex
-      console.log(this.teacherUseExPaper)
-      console.log(this.examForm)
     }
   },
 
