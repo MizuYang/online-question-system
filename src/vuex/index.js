@@ -4,7 +4,8 @@ export default createStore({
   strict: false, // 嚴謹模式
   state: {
     // 所有在 store 裏的資料
-    questionsList: {} //* 題組的題目數量
+    questionsList: {}, //* 題組的題目數量
+    teacherUseExPaper: {} //* 老師選的考卷
     // scorePercentage: {
     //   是非題: 0,
     //   單選題: 0,
@@ -24,6 +25,10 @@ export default createStore({
         const queNum = val[keys]
         store.questionsList[keys] = queNum
       })
+    },
+    //* 確定考卷
+    CONFIRM_EX_PAPER (store, val) {
+      store.teacherUseExPaper = val
     }
   },
   getters: {

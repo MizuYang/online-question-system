@@ -14,8 +14,8 @@
     </option>
   </select>
 
-  <button type="button" class="mx-5 my-4" @click="teacherUseExPaper=perviewExamPaper" v-if="Object.keys(teacherUseExPaper).length===0&& Object.keys(previewQueList).length>0">確定使用此考卷</button>
-  <button type="button" class="mx-5 my-4" @click="clearExPaper" v-if="Object.keys(teacherUseExPaper).length>0">重選考卷</button>
+  <button type="button" class="mx-5 my-4" @click="confirmExPaper" v-if="Object.keys(teacherUseExPaper).length===0&& Object.keys(previewQueList).length>0">確定使用此考卷</button>
+  <button type="button" class="mx-5 my-4" @click="resetExPaper" v-if="Object.keys(teacherUseExPaper).length>0">重選考卷</button>
 
   <br>
 
@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import QuestionsView from '@/mixins/QuestionsBank.vue'
 export default {
 
@@ -72,6 +72,8 @@ export default {
   },
 
   methods: {
+    ...mapMutations(['CONFIRM_EX_PAPER', 'RESET_EX_PAPER']),
+
     //* 切換預覽考卷
     changePreviewExPaper (e) {
       const currentExPaper = e.target.value
@@ -90,11 +92,12 @@ export default {
       }
     },
     //* 重選考卷
-    clearExPaper () {
+    resetExPaper () {
       //* 初始化
       this.teacherUseExPaper = {}
       this.previewQueList = {}
       this.perviewExamPaper = {}
+      this.RESET_EX_PAPER()
     },
     //* 生成用戶選擇的各題組 指定數量的隨機題目
     getRandomQuestions () {
@@ -181,6 +184,11 @@ export default {
         }
       })
       return `A：${answerCount.A}, B：${answerCount.B}, C： ${answerCount.C}, D：${answerCount.D}`
+    },
+    //* 確定考卷
+    confirmExPaper () {
+      this.teacherUseExPaper = this.perviewExamPaper
+      this.CONFIRM_EX_PAPER(this.perviewExamPaper)
     }
   },
 
