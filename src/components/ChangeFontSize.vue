@@ -20,9 +20,6 @@ export default {
     }
   },
 
-  watch: {
-  },
-
   methods: {
     //* 切換文字大小
     changeSize (e) {
@@ -38,5 +35,3 @@ export default {
 
 }
 </script>
-
-<style lang='scss' scope></style>

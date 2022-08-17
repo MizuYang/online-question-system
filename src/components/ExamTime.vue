@@ -89,7 +89,7 @@ export default {
         m: 0,
         s: 0
       },
-      time: 0,
+      time: localStorage.getItem('examTime') || 0,
       examStatusList: {
         setting: 0,
         start: 1,
@@ -122,8 +122,18 @@ export default {
           console.log('考試時間結束')
           this.examStatus = this.examStatusList.end
           clearInterval(examTimer) //* 清除倒數計時
+          localStorage.setItem('examTime', 0) //* 清除 localStorage 紀錄
         }
+        localStorage.setItem('examTime', this.time)
       }, 1000)
+    }
+  },
+
+  mounted () {
+    //* 若計時器有保存時間的紀錄,就直接繼續季時
+    //* (學生先前可能按到關閉網頁，又重新登入線上考試)
+    if (this.time > 0) {
+      this.startExam()
     }
   }
 
