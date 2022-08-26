@@ -13,7 +13,7 @@
             <ul v-for="(items,i,indexx) in question.選項" :key="`${question.題目}${items}${i}`" class="list-unstyled ms-2">
               <li>
                 <input type="radio" :id="`${question.題目}${items}`" :name="`${question.題目}`"
-                      :value="indexx" v-model="examForm[`q${key}${index+1}`]">
+                      :value="indexx" v-model="examForm[question.題目]">
                 <label :for="`${question.題目}${items}`">{{ items }}</label>
               </li>
             </ul>
@@ -62,29 +62,15 @@ export default {
           arr.push(items)
         })
       })
-      //* 取出選項中答案的索引位置
-      arr.forEach((items, index) => {
-        const answerIndex = Object.values(items.選項).findIndex(item => {
-          return item === '答案'
-        })
-
-        //* 和考生選擇的索引位置一樣(答對)，就將 examStatus.bingo+1，答錯 examStatus.wrongAnswer+1
-        const studentAnsArr = []
-        //* 先將學生答案拉出來
-        Object.values(this.examForm).forEach(studentAnswer => {
-          studentAnsArr.push(studentAnswer)
-        })
-
-        //* 比對學生答案索引和正確解答索引是否一致
-        console.log('學生答案', studentAnsArr[index])
-        console.log('正確答案', answerIndex)
-        if (studentAnsArr[index] === answerIndex) {
+      //* 取出答案、題目
+      arr.forEach(ans => {
+        const quention = ans.題目
+        if (this.examForm[quention] === ans.答案) {
           this.examStatus.bingo++
         } else {
           this.examStatus.wrongAnswer++
         }
       })
-      console.log('this.examStatus', this.examStatus)
     }
   },
 
